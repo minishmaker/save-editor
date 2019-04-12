@@ -13,9 +13,9 @@ namespace SaveEditor.Core
         None
     }
 
-    public class ROM
+    public class SRAM
     {
-        public static ROM Instance { get; private set; }
+        public static SRAM Instance { get; private set; }
         public readonly string path;
 
         public readonly byte[] romData;
@@ -24,7 +24,7 @@ namespace SaveEditor.Core
         public RegionVersion version { get; private set; } = RegionVersion.None;
 
 
-        public ROM(string filePath)
+        public SRAM(string filePath)
         {
             Instance = this;
             path = filePath;

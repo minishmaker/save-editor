@@ -13,7 +13,7 @@ namespace SaveEditor.UI
 {
     public partial class MainWindow : Form
     {
-        private ROM ROM_;
+        private SRAM ROM_;
 
         public MainWindow()
         {
@@ -34,8 +34,8 @@ namespace SaveEditor.UI
         {
             OpenFileDialog ofd = new OpenFileDialog
             {
-                Filter = "GBA ROMs|*.gba|All Files|*.*",
-                Title = "Select TMC ROM"
+                Filter = "GBA Save Files|*.sav|All Files|*.*",
+                Title = "Select TMC Save File"
             };
 
             if (ofd.ShowDialog() != DialogResult.OK)
@@ -45,7 +45,7 @@ namespace SaveEditor.UI
 
             try
             {
-                ROM_ = new ROM(ofd.FileName);
+                ROM_ = new SRAM(ofd.FileName);
             }
             catch (Exception e)
             {
@@ -53,15 +53,15 @@ namespace SaveEditor.UI
                 throw;
             }
 
-            if (ROM.Instance.version.Equals(RegionVersion.None))
+            if (SRAM.Instance.version.Equals(RegionVersion.None))
             {
-                MessageBox.Show("Invalid TMC ROM. Please Open a valid ROM.", "Incorrect ROM", MessageBoxButtons.OK);
-                statusText.Text = "Unable to determine ROM.";
+                MessageBox.Show("Invalid TMC save file. Please open a valid save.", "Invalid save", MessageBoxButtons.OK);
+                statusText.Text = "Unable to determine save file.";
                 return;
             }
 
 
-            statusText.Text = "Loaded: " + ROM.Instance.path;
+            statusText.Text = "Loaded: " + SRAM.Instance.path;
         }
     }
 }

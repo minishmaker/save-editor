@@ -49,7 +49,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Utilities\Reader.cs" />
-    <Compile Include="Core\ROM.cs" />
+    <Compile Include="Core\SRAM.cs" />
     <Compile Include="UI\MainWindow.cs">
       <SubType>Form</SubType>
     </Compile>
