@@ -13,7 +13,7 @@ namespace SaveEditor.UI
 {
     public partial class MainWindow : Form
     {
-        private SRAM ROM_;
+        private SRAM SRAM_;
 
         public MainWindow()
         {
@@ -45,7 +45,7 @@ namespace SaveEditor.UI
 
             try
             {
-                ROM_ = new SRAM(ofd.FileName);
+                SRAM_ = new SRAM(ofd.FileName);
             }
             catch (Exception e)
             {

@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Drawing.Drawing2D;
 using System.IO;
+using System.Runtime.InteropServices;
 using SaveEditor.Utilities;
 
 namespace SaveEditor.Core
@@ -33,30 +35,61 @@ namespace SaveEditor.Core
             reader = new Reader(stream);
             Debug.WriteLine("Read " + stream.Length + " bytes.");
 
-            SetupRom();
+            // temp test checksum
+            uint sum = ReadChecksum(0);
+            uint calcsum = CalculateChecksum(0);
+
+            if (sum == calcsum) Console.WriteLine("Checksum correct.");
         }
 
-        private void SetupRom()
+        public uint ReadChecksum(int fileID)
         {
-            // Determine game region and if valid ROM
-            byte[] regionBytes = reader.ReadBytes(4, 0xAC);
-            string region = System.Text.Encoding.UTF8.GetString(regionBytes);
-            Debug.WriteLine("Region detected: " + region);
+            uint sum = (uint)(reader.ReadUInt16(0x30 + (fileID * 0x10)) << 16);
+            sum += reader.ReadUInt16();
 
-            if (region == "BZMP")
+            return sum;
+        }
+
+        public uint CalculateChecksum(int fileID)
+        {
+            byte[] gameState = reader.ReadBytes(0x04, 0x34 + (fileID * 0x10));
+
+            byte[] gameData = reader.ReadBytes(0x500, 0x80 + (fileID * 0x500));
+
+            uint shortcheck = PartialCheck(gameState);
+            uint longcheck = PartialCheck(gameData);
+
+            return Combine(shortcheck, longcheck);
+        }
+
+        private uint PartialCheck(byte[] data)
+        {
+            uint pos = 0;
+            uint remaining = (uint)data.Length;
+            uint sum = 0;
+
+            while (remaining > 0)
             {
-                version = RegionVersion.EU;
+                sum += (uint)(data[pos] | (data[pos + 1] << 8)) ^ remaining;
+                pos += 2;
+                remaining -= 2;
             }
 
-            if (region == "BZMJ")
-            {
-                version = RegionVersion.JP;
-            }
+            sum &= 0xFFFF;
 
-            if (region == "BZME")
-            {
-                version = RegionVersion.US;
-            }
+            return sum;
+        }
+
+        private uint Combine(uint shortcheck, uint longcheck)
+        {
+            uint combined = (shortcheck + longcheck) & 0xFFFF;
+            uint upper = combined << 16;
+            uint lower = ~combined & 0xFFFF;
+
+            lower += 1;
+            combined = upper + lower;
+
+            return combined;
         }
     }
 }
