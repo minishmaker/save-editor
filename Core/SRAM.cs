@@ -20,7 +20,7 @@ namespace SaveEditor.Core
         public static SRAM Instance { get; private set; }
         public readonly string path;
 
-        public readonly byte[] romData;
+        private byte[] romData;
         public readonly Reader reader;
 
         public RegionVersion version { get; private set; } = RegionVersion.None;
@@ -31,6 +31,14 @@ namespace SaveEditor.Core
             Instance = this;
             path = filePath;
             romData = File.ReadAllBytes(filePath);
+
+            // Data is stored in reversed blocked of 8; when read by GBA it assumes the correct order, so we need to change it.
+            for (int block = 0; block < romData.Length;)
+            {
+                Array.Reverse(romData, block, 8);
+                block += 8;
+            }
+
             Stream stream = Stream.Synchronized(new MemoryStream(romData));
             reader = new Reader(stream);
             Debug.WriteLine("Read " + stream.Length + " bytes.");
