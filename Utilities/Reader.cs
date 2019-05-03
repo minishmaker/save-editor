@@ -6,18 +6,15 @@ namespace SaveEditor.Utilities
     {
         private readonly Stream stream_;
 
-        private readonly BinaryReader reader;
+        private readonly BinaryReader reader_;
 
         public Reader(Stream stream)
         {
             stream_ = stream;
-            reader = new BinaryReader(stream);
+            reader_ = new BinaryReader(stream);
         }
 
-        public long Position
-        {
-            get { return stream_.Position; }
-        }
+        public long Position => stream_.Position;
 
         public void SetPosition(long pos)
         {
@@ -54,7 +51,7 @@ namespace SaveEditor.Utilities
 
         public byte ReadByte()
         {
-            return reader.ReadByte();
+            return reader_.ReadByte();
         }
 
         public byte ReadByte(long pos)
@@ -65,7 +62,7 @@ namespace SaveEditor.Utilities
 
         public byte[] ReadBytes(int num)
         {
-            return reader.ReadBytes(num);
+            return reader_.ReadBytes(num);
         }
 
         public byte[] ReadBytes(int num, long pos)
@@ -76,46 +73,46 @@ namespace SaveEditor.Utilities
 
         public ushort ReadUInt16()
         {
-            return reader.ReadUInt16();
+            return reader_.ReadUInt16();
         }
 
         public ushort ReadUInt16(long pos)
         {
             stream_.Position = pos;
-            return reader.ReadUInt16();
+            return reader_.ReadUInt16();
         }
 
         public short ReadInt16()
         {
-            return reader.ReadInt16();
+            return reader_.ReadInt16();
         }
 
         public short ReadInt16(long pos)
         {
             stream_.Position = pos;
-            return reader.ReadInt16();
+            return reader_.ReadInt16();
         }
 
         public uint ReadUInt32()
         {
-            return reader.ReadUInt32();
+            return reader_.ReadUInt32();
         }
 
         public uint ReadUInt32(long pos)
         {
             stream_.Position = pos;
-            return reader.ReadUInt32();
+            return reader_.ReadUInt32();
         }
 
         public int ReadInt()
         {
-            return reader.ReadInt32();
+            return reader_.ReadInt32();
         }
 
         public int ReadInt(long pos)
         {
             stream_.Position = pos;
-            return reader.ReadInt32(); ;
+            return reader_.ReadInt32(); ;
         }
 
         public int ReadAddr()
