@@ -48,6 +48,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Core\SaveFile.cs" />
     <Compile Include="Utilities\Reader.cs" />
     <Compile Include="Core\SRAM.cs" />
     <Compile Include="UI\MainWindow.cs">
