@@ -50,24 +50,43 @@ namespace SaveEditor.Core
             if (sum == calcsum) Console.WriteLine("Checksum correct.");
         }
 
-        public uint ReadChecksum(int fileID)
+        public SaveFile GetSaveFile(int fileNumber)
         {
-            uint sum = (uint)(reader.ReadUInt16(0x30 + (fileID * 0x10)) << 16);
+
+            return new SaveFile(ReadChecksum(fileNumber), ReadData(fileNumber));
+
+        }
+
+        private uint ReadChecksum(int fileNumber)
+        {
+            uint sum = (uint)(reader.ReadUInt16(0x30 + (fileNumber * 0x10)) << 16);
             sum += reader.ReadUInt16();
 
             return sum;
         }
 
-        public uint CalculateChecksum(int fileID)
+        private byte[] ReadData(int fileNumber)
         {
-            byte[] gameState = reader.ReadBytes(0x04, 0x34 + (fileID * 0x10));
+            return reader.ReadBytes(0x500, 0x80 + (fileNumber * 0x500));
+        }
 
-            byte[] gameData = reader.ReadBytes(0x500, 0x80 + (fileID * 0x500));
+        public uint CalculateChecksum(int fileNumber)
+        {
+            byte[] gameState = reader.ReadBytes(0x04, 0x34 + (fileNumber * 0x10));
+
+            byte[] gameData = reader.ReadBytes(0x500, 0x80 + (fileNumber * 0x500));
 
             uint shortcheck = PartialCheck(gameState);
             uint longcheck = PartialCheck(gameData);
 
-            return Combine(shortcheck, longcheck);
+            uint combined = (shortcheck + longcheck) & 0xFFFF;
+            uint upper = combined << 16;
+            uint lower = ~combined & 0xFFFF;
+
+            lower += 1;
+            combined = upper + lower;
+
+            return combined;
         }
 
         private uint PartialCheck(byte[] data)
@@ -86,18 +105,6 @@ namespace SaveEditor.Core
             sum &= 0xFFFF;
 
             return sum;
-        }
-
-        private uint Combine(uint shortcheck, uint longcheck)
-        {
-            uint combined = (shortcheck + longcheck) & 0xFFFF;
-            uint upper = combined << 16;
-            uint lower = ~combined & 0xFFFF;
-
-            lower += 1;
-            combined = upper + lower;
-
-            return combined;
         }
     }
 }
