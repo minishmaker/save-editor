@@ -23,8 +23,6 @@ namespace SaveEditor.Core
             Stream stream = Stream.Synchronized(new MemoryStream(data));
             reader_ = new Reader(stream);
             writer_ = new Writer(stream);
-
-            Console.WriteLine(GetName());
         }
 
         public string GetName()

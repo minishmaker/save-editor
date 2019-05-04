@@ -71,7 +71,10 @@ namespace SaveEditor.Core
 
             writer.Flush();
 
-            byte[] dataToWrite = saveData;
+            byte[] dataToWrite = new byte[saveData.Length];
+
+            Array.Copy(saveData, dataToWrite, saveData.Length);
+            
 
             // Flip data back for output write, but don't touch current data
             for (int block = 0; block < dataToWrite.Length;)
@@ -79,6 +82,8 @@ namespace SaveEditor.Core
                 Array.Reverse(dataToWrite, block, 8);
                 block += 8;
             }
+
+            if (dataToWrite == saveData) Console.WriteLine("Same!");
             
             File.WriteAllBytes(path, dataToWrite);
 

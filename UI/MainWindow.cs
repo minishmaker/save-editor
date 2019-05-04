@@ -80,6 +80,7 @@ namespace SaveEditor.UI
         private void LoadData()
         {
             saveCombo.Enabled = true;
+            fileNameTextBox.Enabled = true;
 
             fileNameTextBox.Text = currentSaveFile_.GetName();
 
