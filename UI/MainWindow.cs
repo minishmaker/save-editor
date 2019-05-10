@@ -89,9 +89,16 @@ namespace SaveEditor.UI
 
         private void Save()
         {
-            currentSaveFile_.WriteName(fileNameTextBox.Text);
+            if (SRAM_ != null)
+            {
+                currentSaveFile_.WriteName(fileNameTextBox.Text);
 
-            SRAM_.SaveFile(currentSaveFile_, saveCombo.SelectedIndex);
+                SRAM_.SaveFile(currentSaveFile_, saveCombo.SelectedIndex);
+            }
+            else
+            {
+                statusText.Text = "Save failed: No save file loaded";
+            }
         }
 
         private void saveCombo_SelectedIndexChanged(object sender, EventArgs e)

@@ -206,8 +206,7 @@
             // statusText
             // 
             this.statusText.Name = "statusText";
-            this.statusText.Size = new System.Drawing.Size(118, 17);
-            this.statusText.Text = "toolStripStatusLabel1";
+            this.statusText.Size = new System.Drawing.Size(0, 17);
             // 
             // MainWindow
             // 
