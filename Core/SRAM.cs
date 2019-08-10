@@ -13,6 +13,12 @@ namespace SaveEditor.Core
         None
     }
 
+    public class ChecksumException : Exception
+    {
+        public ChecksumException() { }
+        public ChecksumException(string message) : base(message) { }
+    }
+
     public class SRAM
     {
         public static SRAM Instance { get; private set; }
@@ -23,6 +29,8 @@ namespace SaveEditor.Core
         public readonly Writer writer;
 
         public RegionVersion version { get; private set; } = RegionVersion.None;
+
+
 
 
         public SRAM(string filePath)
@@ -63,8 +71,7 @@ namespace SaveEditor.Core
 
             uint newchecksum = CalculateChecksum(fileNumber);
 
-            Console.WriteLine("old checksum {0}", StringUtil.AsStringHex8((int)checksum));
-            Console.WriteLine("new checksum {0}", StringUtil.AsStringHex8((int)newchecksum));
+            if (checksum != newchecksum) throw new ChecksumException($"Checksums not equal! Old Checksum: {checksum} New Checksum: {newchecksum}");
 
             writer.WriteUInt16((ushort)((newchecksum & 0xFFFF0000) >> 16),0x30 + (fileNumber * 0x10));
             writer.WriteUInt16((ushort)(newchecksum & 0xFFFF));
@@ -103,7 +110,7 @@ namespace SaveEditor.Core
             return reader.ReadBytes(0x500, 0x80 + (fileNumber * 0x500));
         }
 
-        public uint CalculateChecksum(int fileNumber)
+        private uint CalculateChecksum(int fileNumber)
         {
             byte[] gameState = reader.ReadBytes(0x04, 0x34 + (fileNumber * 0x10));
 
