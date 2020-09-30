@@ -71,7 +71,8 @@ namespace SaveEditor.Core
 
             uint newchecksum = CalculateChecksum(fileNumber);
 
-            if (checksum != newchecksum) throw new ChecksumException($"Checksums not equal! Old Checksum: {checksum} New Checksum: {newchecksum}");
+            Console.WriteLine("old checksum {0}", StringUtil.AsStringHex8((int)checksum));
+            Console.WriteLine("new checksum {0}", StringUtil.AsStringHex8((int)newchecksum));
 
             writer.WriteUInt16((ushort)((newchecksum & 0xFFFF0000) >> 16),0x30 + (fileNumber * 0x10));
             writer.WriteUInt16((ushort)(newchecksum & 0xFFFF));
